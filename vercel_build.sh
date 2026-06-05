@@ -27,6 +27,6 @@ echo "📥 Getting dependencies..."
 flutter pub get --no-version-check
 
 echo "🔨 Building Flutter Web..."
-flutter build web --release --web-renderer canvaskit --no-version-check
+flutter build web --release --no-tree-shake-icons --no-version-check
 
 echo "🎉 Build complete! Output in build/web"

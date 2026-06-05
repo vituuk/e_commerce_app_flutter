@@ -30,7 +30,7 @@ jobs:
 
       # 4. Build Flutter Web
       - name: 🔨 Build Flutter Web
-        run: flutter build web --release --web-renderer canvaskit
+        run: flutter build web --release --no-tree-shake-icons
 
       # 5. Deploy build/web output to Vercel
       - name: 🌐 Deploy to Vercel
