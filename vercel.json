@@ -1,6 +1,9 @@
 {
   "version": 2,
   "framework": null,
+  "buildCommand": "bash vercel_build.sh",
+  "outputDirectory": "build/web",
+  "installCommand": "",
   "routes": [
     {
       "handle": "filesystem"
