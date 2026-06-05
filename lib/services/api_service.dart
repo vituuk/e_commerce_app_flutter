@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:lesson_flutter/models/category.dart';
 import 'package:lesson_flutter/models/product.dart';
@@ -13,25 +14,28 @@ class ApiService {
   // For iOS Simulator: http://localhost:8000/api  
   // For Physical Device: http://YOUR_COMPUTER_IP:8000/api (change this!)
   
+  // Reads API_BASE_URL from .env file
+  // Set this to your Render backend URL in .env:
+  //   API_BASE_URL=https://your-app.onrender.com/api
+  static String get _productionUrl =>
+      dotenv.env['API_BASE_URL'] ?? 'http://localhost:8000/api';
+
   static String get _baseUrl {
     if (kIsWeb) {
-      // Web platform (Chrome, Edge, etc.)
-      return 'http://localhost:8000/api';
+      // Web (Vercel deploy) → uses API_BASE_URL from .env
+      return _productionUrl;
     } else if (Platform.isAndroid) {
-      // For physical Android device, use your computer's IP address
-      // Make sure your phone and computer are on the same WiFi network
-      // return 'http://192.168.0.124:8000/api';
+      // Android Emulator
       return 'http://10.0.2.2:8000/api';
-      
-      // For Android Emulator, use: http://10.0.2.2:8000/api
     } else if (Platform.isIOS) {
-      // iOS Simulator can use localhost
+      // iOS Simulator
       return 'http://localhost:8000/api';
     } else {
-      // Default fallback
-      return 'http://localhost:8000/api';
+      // Fallback (desktop / physical device)
+      return _productionUrl;
     }
   }
+
   
   static String? _authToken;
 

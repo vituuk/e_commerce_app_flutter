@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lesson_flutter/screens/home-page.dart';
 import 'package:lesson_flutter/screens/auth/login.dart';
 import 'package:lesson_flutter/screens/auth/register.dart';
@@ -10,9 +11,12 @@ import 'package:lesson_flutter/theme/app_theme.dart';
 import 'package:lesson_flutter/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
