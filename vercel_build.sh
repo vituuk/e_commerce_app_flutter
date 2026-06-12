@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Disable git safe directory checks in this build environment to avoid dubious ownership errors
+git config --global --add safe.directory '*' || true
+
 echo "🐦 Installing Flutter SDK..."
 
 FLUTTER_VERSION="3.32.2"
