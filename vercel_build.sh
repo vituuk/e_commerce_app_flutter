@@ -39,7 +39,7 @@ if [ ! -f ".env" ]; then
   cat > .env << 'EOF'
 # Flutter App Environment Variables
 # Backend API URL (Render deployment)
-API_BASE_URL=https://e-commerce-app-laravel.onrender.com/api
+API_BASE_URL=https://e-commerce-app-laravel-2.onrender.com/api
 APP_NAME=E-Commerce App
 APP_DEBUG=false
 EOF
