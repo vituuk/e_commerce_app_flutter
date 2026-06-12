@@ -9,7 +9,7 @@ git config --global --add safe.directory '*' || true
 
 echo "🐦 Installing Flutter SDK..."
 
-FLUTTER_VERSION="3.32.2"
+FLUTTER_VERSION="3.41.8"
 FLUTTER_DIR="$HOME/flutter"
 
 # Download Flutter stable release
