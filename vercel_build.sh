@@ -39,9 +39,9 @@ EOF
 fi
 
 echo "📥 Getting dependencies..."
-flutter pub get --no-version-check
+flutter pub get
 
 echo "🔨 Building Flutter Web..."
-flutter build web --release --no-tree-shake-icons --no-version-check
+flutter build web --release --no-tree-shake-icons
 
 echo "🎉 Build complete! Output in build/web"
