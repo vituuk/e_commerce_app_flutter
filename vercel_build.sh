@@ -23,6 +23,18 @@ flutter --version --no-version-check
 echo "⚙️  Pre-caching web tools..."
 flutter precache --web --no-version-check
 
+# Create .env if it doesn't exist (required by flutter_dotenv)
+if [ ! -f ".env" ]; then
+  echo "📝 Creating .env from environment or defaults..."
+  cat > .env << 'EOF'
+# Flutter App Environment Variables
+# Backend API URL (Render deployment)
+API_BASE_URL=https://e-commerce-app-laravel.onrender.com/api
+APP_NAME=E-Commerce App
+APP_DEBUG=false
+EOF
+fi
+
 echo "📥 Getting dependencies..."
 flutter pub get --no-version-check
 
