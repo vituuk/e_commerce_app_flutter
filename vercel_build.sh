@@ -5,6 +5,7 @@ set -e
 export GIT_CONFIG_COUNT=1
 export GIT_CONFIG_KEY_0=safe.directory
 export GIT_CONFIG_VALUE_0='*'
+git config --global --add safe.directory '*' || true
 
 echo "🐦 Installing Flutter SDK..."
 
@@ -17,8 +18,12 @@ curl -fsSL \
   -o flutter.tar.xz
 
 echo "📦 Extracting Flutter..."
-tar xf flutter.tar.xz -C "$HOME"
+tar --no-same-owner -xf flutter.tar.xz -C "$HOME"
 rm flutter.tar.xz
+
+# Ensure ownership of the extracted SDK matches the current user running the build
+chown -R $(whoami) "$FLUTTER_DIR" || true
+git config --global --add safe.directory "$FLUTTER_DIR" || true
 
 export PATH="$PATH:$FLUTTER_DIR/bin"
 
