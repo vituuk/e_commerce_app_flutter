@@ -2,7 +2,9 @@
 set -e
 
 # Disable git safe directory checks in this build environment to avoid dubious ownership errors
-git config --global --add safe.directory '*' || true
+export GIT_CONFIG_COUNT=1
+export GIT_CONFIG_KEY_0=safe.directory
+export GIT_CONFIG_VALUE_0='*'
 
 echo "🐦 Installing Flutter SDK..."
 
