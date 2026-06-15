@@ -17,8 +17,16 @@ class ApiService {
   // Reads API_BASE_URL from .env file
   // Set this to your Render backend URL in .env:
   //   API_BASE_URL=https://your-app.onrender.com/api
-  static String get _productionUrl =>
-      dotenv.env['API_BASE_URL'] ?? 'http://localhost:8000/api';
+  static String get _productionUrl {
+    String url = dotenv.env['API_BASE_URL'] ?? 'http://localhost:8000/api';
+    if (!url.endsWith('/api') && !url.endsWith('/api/')) {
+      if (url.endsWith('/')) {
+        url = url.substring(0, url.length - 1);
+      }
+      url = '$url/api';
+    }
+    return url;
+  }
 
   static String get _baseUrl {
     if (kIsWeb) {

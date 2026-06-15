@@ -35,14 +35,11 @@ flutter precache --web --no-version-check
 
 # Create .env if it doesn't exist (required by flutter_dotenv)
 if [ ! -f ".env" ]; then
-  echo "📝 Creating .env from environment or defaults..."
-  cat > .env << 'EOF'
-# Flutter App Environment Variables
-# Backend API URL (Render deployment)
-API_BASE_URL=https://e-commerce-app-laravel-2.onrender.com/api
-APP_NAME=E-Commerce App
-APP_DEBUG=false
-EOF
+  echo "📝 Creating .env from environment variables or defaults..."
+  echo "# Flutter App Environment Variables" > .env
+  echo "API_BASE_URL=${API_BASE_URL:-https://e-commerce-app-laravel-2.onrender.com/api}" >> .env
+  echo "APP_NAME=${APP_NAME:-E-Commerce App}" >> .env
+  echo "APP_DEBUG=${APP_DEBUG:-false}" >> .env
 fi
 
 echo "📥 Getting dependencies..."
