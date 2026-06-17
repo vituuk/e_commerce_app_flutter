@@ -523,6 +523,21 @@ class ApiService {
     }
   }
 
+  /// Update order payment_status — used for sandbox payment simulation
+  static Future<void> updateOrderStatus(int orderId, String paymentStatus) async {
+    final response = await http.put(
+      Uri.parse('$_baseUrl/orders/$orderId'),
+      headers: await _getHeaders(),
+      body: json.encode({'payment_status': paymentStatus}),
+    );
+
+    if (response.statusCode != 200) {
+      final body = json.decode(response.body);
+      throw Exception(body['message'] ?? 'Failed to update order status');
+    }
+  }
+
+
   // ───────────────── CUSTOMER PROFILE ─────────────────
 
   /// Get the current user's customer profile

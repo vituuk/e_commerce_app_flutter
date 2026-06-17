@@ -123,6 +123,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 orderData: orderData,
                 qrString: qrData['qr_string'],
                 deeplink: qrData['abapay_deeplink'],
+                isMock: qrData['is_mock'] == true,
               ),
             ),
           );

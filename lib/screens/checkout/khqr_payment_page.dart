@@ -9,12 +9,14 @@ class KHQRPaymentPage extends StatefulWidget {
   final Map<String, dynamic> orderData;
   final String qrString;
   final String deeplink;
+  final bool isMock;
 
   const KHQRPaymentPage({
     super.key,
     required this.orderData,
     required this.qrString,
     required this.deeplink,
+    this.isMock = false,
   });
 
   @override
@@ -25,6 +27,7 @@ class _KHQRPaymentPageState extends State<KHQRPaymentPage> {
   Timer? _statusTimer;
   bool _isCheckingStatus = false;
   bool _isSuccess = false;
+  bool _isSimulating = false;
   int _secondsRemaining = 900; // 15 minutes expiration
   Timer? _countdownTimer;
 
@@ -176,6 +179,29 @@ class _KHQRPaymentPageState extends State<KHQRPaymentPage> {
     );
   }
 
+  /// Simulate a successful payment — for sandbox/emulator testing only.
+  /// Calls the backend to mark the order as completed, which the
+  /// status polling will then detect and show the success dialog.
+  Future<void> _simulatePayment() async {
+    setState(() => _isSimulating = true);
+    try {
+      final orderId = widget.orderData['id'];
+      await ApiService.updateOrderStatus(orderId, 'completed');
+      // Polling will automatically detect the change within 3 seconds
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Simulation failed: ${e.toString().replaceAll('Exception: ', '')}'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSimulating = false);
+    }
+  }
+
   String _formatTime(int seconds) {
     final int minutes = seconds ~/ 60;
     final int remainingSeconds = seconds % 60;
@@ -318,10 +344,6 @@ class _KHQRPaymentPageState extends State<KHQRPaymentPage> {
                         data: widget.qrString,
                         version: QrVersions.auto,
                         size: 240.0,
-                        embeddedImage: const AssetImage('lib/assets/image/google.png'), // Fallback embedded image if any, otherwise just clean QR
-                        embeddedImageStyle: const QrEmbeddedImageStyle(
-                          size: Size(30, 30),
-                        ),
                         errorStateBuilder: (cxt, err) {
                           return const Center(
                             child: Text(
@@ -430,6 +452,71 @@ class _KHQRPaymentPageState extends State<KHQRPaymentPage> {
               ),
 
               const SizedBox(height: 16),
+
+              // Sandbox/Mock test button — only shown for mock QR codes
+              if (widget.isMock) ...
+                [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade50,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.orange.shade300),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.science_outlined, color: Colors.orange.shade700, size: 16),
+                            const SizedBox(width: 6),
+                            Text(
+                              'SANDBOX MODE — Mock QR',
+                              style: TextStyle(
+                                color: Colors.orange.shade800,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 44,
+                          child: ElevatedButton.icon(
+                            onPressed: _isSimulating ? null : _simulatePayment,
+                            icon: _isSimulating
+                                ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Icon(Icons.check_circle_outline, color: Colors.white, size: 18),
+                            label: Text(
+                              _isSimulating ? 'Simulating...' : 'Simulate Successful Payment',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange.shade700,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
 
               // Status check loading indicator
               Row(
