@@ -261,7 +261,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       Color primary) {
     return Form(
       key: _emailFormKey,
-      key: const ValueKey('email_form'),
       child: Column(
         children: [
           TextFormField(
@@ -325,7 +324,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     return Form(
       key: _resetFormKey,
-      key: const ValueKey('reset_form'),
       child: Column(
         children: [
           // 6-digit Code field
