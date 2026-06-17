@@ -10,6 +10,7 @@ class KHQRPaymentPage extends StatefulWidget {
   final String qrString;
   final String deeplink;
   final bool isMock;
+  final String? abaError;
 
   const KHQRPaymentPage({
     super.key,
@@ -17,6 +18,7 @@ class KHQRPaymentPage extends StatefulWidget {
     required this.qrString,
     required this.deeplink,
     this.isMock = false,
+    this.abaError,
   });
 
   @override
@@ -480,6 +482,26 @@ class _KHQRPaymentPageState extends State<KHQRPaymentPage> {
                             ),
                           ],
                         ),
+                        if (widget.abaError != null) ...[
+                          const SizedBox(height: 6),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              'ABA Error: ${widget.abaError}',
+                              style: TextStyle(
+                                color: Colors.red.shade800,
+                                fontSize: 10,
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                          ),
+                        ],
+
                         const SizedBox(height: 8),
                         SizedBox(
                           width: double.infinity,
