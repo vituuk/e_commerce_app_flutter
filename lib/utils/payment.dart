@@ -3,6 +3,7 @@ import 'package:lesson_flutter/utils/new-card.dart';
 import 'package:lesson_flutter/services/cart_service.dart';
 import 'package:lesson_flutter/services/api_service.dart';
 import 'package:lesson_flutter/screens/orders/order_history_page.dart';
+import 'package:lesson_flutter/screens/orders/order_details_page.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -73,11 +74,11 @@ class _PaymentPageState extends State<PaymentPage> {
 
       if (!mounted) return;
 
-      // Navigate to success screen
+      // Navigate to order details screen
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) => OrderSuccessPage(orderData: orderData),
+          builder: (_) => OrderDetailsPage(orderId: orderData['id']),
         ),
         (route) => route.isFirst,
       );

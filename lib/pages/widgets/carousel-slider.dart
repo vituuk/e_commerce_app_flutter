@@ -1,3 +1,5 @@
+// Unused exercise file commented out to fix Vercel web compilation
+/*
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -36,3 +38,4 @@ class MySlider extends StatelessWidget {
     );
   }
 }
+*/

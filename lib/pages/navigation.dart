@@ -1,3 +1,5 @@
+// Unused exercise file commented out to fix Vercel web compilation
+/*
 import 'package:flutter/material.dart';
 import 'package:lesson_flutter/pages/routes/home-page.dart';
 import 'package:lesson_flutter/components/home-page/carousel-slider.dart';
@@ -146,3 +148,4 @@ class _MainNavigationState extends State<MainNavigation> {
     );
   }
 }
+*/
