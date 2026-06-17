@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lesson_flutter/screens/auth/register.dart';
+import 'package:lesson_flutter/screens/auth/forgot_password.dart';
 import 'package:lesson_flutter/services/api_service.dart';
 import 'package:provider/provider.dart';
 import 'package:lesson_flutter/services/favorite_service.dart';
@@ -265,7 +266,14 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const Spacer(),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPasswordPage(),
+                          ),
+                        );
+                      },
                       child: Text(
                         'Forgot Password?',
                         style: TextStyle(
