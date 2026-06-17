@@ -4,6 +4,7 @@ import 'package:lesson_flutter/services/api_service.dart';
 import 'package:lesson_flutter/models/customer.dart';
 import 'package:lesson_flutter/screens/profile/customer_profile_page.dart';
 import 'package:lesson_flutter/screens/orders/order_details_page.dart';
+import 'package:lesson_flutter/screens/checkout/khqr_payment_page.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -102,10 +103,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
       }).toList();
 
       // Create order
-      final orderData = await ApiService.createOrder(
+      final responseData = await ApiService.createOrder(
         paymentMethod: selectedPaymentMethod,
         items: items,
       );
+
+      final orderData = responseData['order'] ?? responseData;
+      final qrData = responseData['qr_data'];
+
+      // Handle KHQR Flow
+      if (selectedPaymentMethod == 'khqr') {
+        setState(() => isPlacingOrder = false);
+        cartService.clearCart();
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => KHQRPaymentPage(
+                orderData: orderData,
+                qrString: qrData['qr_string'],
+                deeplink: qrData['abapay_deeplink'],
+              ),
+            ),
+          );
+        }
+        return;
+      }
 
       setState(() => isPlacingOrder = false);
 
@@ -341,6 +364,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     'google_pay',
                     'Google Pay',
                     Icons.payment,
+                    theme,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildPaymentOption(
+                    'khqr',
+                    'KHQR Code (ABA PayWay)',
+                    Icons.qr_code_2,
                     theme,
                   ),
 
