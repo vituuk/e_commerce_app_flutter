@@ -168,6 +168,31 @@ class ApiService {
     }
   }
 
+  /// Login with Google
+  static Future<Map<String, dynamic>> loginWithGoogle(String idToken) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/auth/google/verify'),
+        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        body: json.encode({
+          'id_token': idToken,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        await saveAuthToken(data['token']);
+        await saveUserData(data['user']);
+        return data;
+      } else {
+        final error = json.decode(response.body);
+        throw Exception(error['message'] ?? 'Google login failed');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   /// Logout user
   static Future<void> logout() async {
     try {

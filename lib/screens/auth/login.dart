@@ -3,6 +3,9 @@ import 'package:lesson_flutter/screens/auth/register.dart';
 import 'package:lesson_flutter/services/api_service.dart';
 import 'package:provider/provider.dart';
 import 'package:lesson_flutter/services/favorite_service.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -349,8 +352,59 @@ class _LoginPageState extends State<LoginPage> {
                 // Google Only
                 Center(
                   child: GestureDetector(
-                    onTap: () {
-                      // Handle Google sign-in
+                    onTap: () async {
+                      if (_isLoading) return;
+                      setState(() => _isLoading = true);
+                      try {
+                        final GoogleSignIn googleSignIn = GoogleSignIn(
+                          clientId: dotenv.env['GOOGLE_WEB_CLIENT_ID'],
+                          serverClientId: kIsWeb ? null : dotenv.env['GOOGLE_WEB_CLIENT_ID'],
+                        );
+                        
+                        final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+                        if (googleUser == null) {
+                          // The user canceled the sign-in
+                          setState(() => _isLoading = false);
+                          return;
+                        }
+
+                        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+                        
+                        // Use idToken or accessToken depending on what is returned
+                        final String? token = googleAuth.idToken ?? googleAuth.accessToken;
+                        
+                        if (token != null) {
+                          final response = await ApiService.loginWithGoogle(token);
+                          
+                          if (!mounted) return;
+                          
+                          final favoriteService = Provider.of<FavoriteService>(context, listen: false);
+                          await favoriteService.loadFavorites();
+                          
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Welcome back, ${response['user']['name']}!'),
+                              backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                          
+                          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        } else {
+                          throw Exception('Failed to get token from Google');
+                        }
+                      } catch (e) {
+                        if (!mounted) return;
+                        setState(() => _isLoading = false);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString().replaceAll('Exception: ', '')),
+                            backgroundColor: Colors.red,
+                            behavior: SnackBarBehavior.floating,
+                            duration: const Duration(seconds: 4),
+                          ),
+                        );
+                      }
                     },
                     child: Container(
                       width: 67,
